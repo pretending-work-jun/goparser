@@ -79,3 +79,43 @@ func (parser *TypeParser) GetParserFromYAML(filename string) {
 		}
 	}
 }
+
+// GetSmartParser - infer parser by looping through [][]string
+func (parser *TypeParser) GetSmartParser(val [][]string) {
+	keys := val[0] // header is always key
+	parser.ParseFunc = make(map[string]ParseFuncType)
+	for col := 0; col < len(keys); col++ {
+		var hasString, hasFloat, hasInt, hasBool bool
+		for row := 1; row < len(val); row++ {
+			if (hasBool && hasInt) || (hasBool && hasFloat) {
+				break
+			}
+			if val[row][col] == "" || strings.ToLower(val[row][col]) == "null" {
+				continue
+			}
+			if _, err := strconv.Atoi(val[row][col]); err == nil {
+				hasInt = true
+				continue
+			}
+			if _, err := strconv.ParseFloat(val[row][col], 64); err == nil {
+				hasFloat = true
+				continue
+			}
+			if strings.ToLower(val[row][col]) == "true" || strings.ToLower(val[row][col]) == "false" {
+				hasBool = true
+				continue
+			}
+			hasString = true
+			break
+		}
+		if hasString || (hasBool && hasInt) || (hasBool && hasFloat) {
+			parser.ParseFunc[keys[col]] = parser.parseString
+		} else if hasFloat {
+			parser.ParseFunc[keys[col]] = parser.parseFloat
+		} else if hasInt {
+			parser.ParseFunc[keys[col]] = parser.parseInt
+		} else if hasBool {
+			parser.ParseFunc[keys[col]] = parser.parseBool
+		}
+	}
+}
