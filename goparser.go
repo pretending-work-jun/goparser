@@ -13,7 +13,7 @@ func ParseInterface2String(val [][]interface{}) [][]string {
 }
 
 // ParseRow2List - convert [][]string to []map[string] (list<key, val>)
-func ParseRow2List(val [][]string, typeParser TypeParser) []map[string]interface{} {
+func ParseRow2List(val [][]string, typeParser *TypeParser) []map[string]interface{} {
 	keys := val[0] // header is always key
 
 	obj := make([]map[string]interface{}, len(val)-1) // this is the object we want to return
@@ -33,7 +33,7 @@ func ParseRow2List(val [][]string, typeParser TypeParser) []map[string]interface
 }
 
 // ParseRow2Map - Parse rows to map, note that keyCol must be unique otherwise it will be overridden by the last row
-func ParseRow2Map(val [][]string, keyCol string, typeParser TypeParser) map[string]map[string]interface{} {
+func ParseRow2Map(val [][]string, keyCol string, typeParser *TypeParser) map[string]map[string]interface{} {
 	res := make(map[string]map[string]interface{})
 
 	keys := val[0] // header is always key
@@ -48,7 +48,7 @@ func ParseRow2Map(val [][]string, keyCol string, typeParser TypeParser) map[stri
 
 	for row := 1; row < len(val); row++ {
 		var key string
-		var rowVal map[string]interface{}
+		rowVal := make(map[string]interface{})
 		for col := 0; col < len(keys); col++ {
 			if col == keyColIndex {
 				key = val[row][col]
