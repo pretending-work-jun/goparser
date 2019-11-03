@@ -1,7 +1,8 @@
 package goparser
 
-// ParseInterface2String - this makes [][]interface{} much easier to work with
-func ParseInterface2String(val [][]interface{}) [][]string {
+// ParseInterfaceToString - this makes [][]interface{} much easier to work with
+// !!Caution!! - Interface must be `string` (data received from spreadsheet etc)
+func ParseInterfaceToString(val [][]interface{}) [][]string {
 	resp := make([][]string, len(val))
 	for i := 0; i < len(val); i++ {
 		resp[i] = make([]string, len(val[i]))
@@ -12,8 +13,8 @@ func ParseInterface2String(val [][]interface{}) [][]string {
 	return resp
 }
 
-// ParseRow2List - convert [][]string to []map[string] (list<key, val>)
-func ParseRow2List(val [][]string, typeParser *TypeParser) []map[string]interface{} {
+// ParseRowToList - convert [][]string to []map[string] (list<key, val>)
+func ParseRowToList(val [][]string, typeParser *TypeParser) []map[string]interface{} {
 	keys := val[0] // header is always key
 
 	obj := make([]map[string]interface{}, len(val)-1) // this is the object we want to return
@@ -32,8 +33,8 @@ func ParseRow2List(val [][]string, typeParser *TypeParser) []map[string]interfac
 	return obj
 }
 
-// ParseRow2Map - Parse rows to map, note that keyCol must be unique otherwise it will be overridden by the last row
-func ParseRow2Map(val [][]string, keyCol string, typeParser *TypeParser) map[string]map[string]interface{} {
+// ParseRowToMap - Parse rows to map, note that keyCol must be unique otherwise it will be overridden by the last row
+func ParseRowToMap(val [][]string, keyCol string, typeParser *TypeParser) map[string]map[string]interface{} {
 	res := make(map[string]map[string]interface{})
 
 	keys := val[0] // header is always key
@@ -52,6 +53,10 @@ func ParseRow2Map(val [][]string, keyCol string, typeParser *TypeParser) map[str
 		for col := 0; col < len(keys); col++ {
 			if col == keyColIndex {
 				key = val[row][col]
+				continue
+			}
+			if val[row][col] == "" || val[row][col] == "null" {
+				rowVal[keys[col]] = nil
 				continue
 			}
 			rowVal[keys[col]] = typeParser.ParseFunc[keys[col]](val[row][col])

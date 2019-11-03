@@ -10,6 +10,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// TypeParser - parse type smartly
+type TypeParser struct {
+	ParseFunc map[string]ParseFuncType
+}
+
 // ParseFuncType - wrap parsing function type
 type ParseFuncType = func(s string) interface{}
 
@@ -31,15 +36,10 @@ func (parser *TypeParser) parseString(s string) interface{} {
 	return s
 }
 
-// TypeParser - parse type smartly
-type TypeParser struct {
-	ParseFunc map[string]ParseFuncType
-}
-
 // ParseTypeYAML - expected format from YAML file
 type ParseTypeYAML struct {
-	ColName string
-	ColType string
+	ColName string `json:"colname"`
+	ColType string `json:"coltype"`
 }
 
 // GetParserFromYAML - smartly make the parsing functions from YAML file
@@ -116,6 +116,10 @@ func (parser *TypeParser) GetSmartParser(val [][]string) {
 			parser.ParseFunc[keys[col]] = parser.parseInt
 		} else if hasBool {
 			parser.ParseFunc[keys[col]] = parser.parseBool
+		} else {
+			// parse as string
+			// unsupported type (yet)
+			parser.ParseFunc[keys[col]] = parser.parseString
 		}
 	}
 }

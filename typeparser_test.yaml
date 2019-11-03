@@ -1,0 +1,9 @@
+---
+- colname: testString
+  coltype: string
+- colname: testInt
+  coltype: int
+- colname: testFloat
+  coltype: float
+- colname: testBool
+  coltype: boolean
