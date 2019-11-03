@@ -12,11 +12,11 @@ import (
 
 // TypeParser - parse type smartly
 type TypeParser struct {
-	ParseFunc map[string]ParseFuncType
+	ParseFunc map[string]parseFuncType
 }
 
-// ParseFuncType - wrap parsing function type
-type ParseFuncType = func(s string) interface{}
+// parseFuncType - wrap parsing function type
+type parseFuncType = func(s string) interface{}
 
 func (parser *TypeParser) parseFloat(s string) interface{} {
 	parsedVal, _ := strconv.ParseFloat(s, 64)
@@ -36,8 +36,8 @@ func (parser *TypeParser) parseString(s string) interface{} {
 	return s
 }
 
-// ParseTypeYAML - expected format from YAML file
-type ParseTypeYAML struct {
+// parseTypeYAML - expected format from YAML file
+type parseTypeYAML struct {
 	ColName string `json:"colname"`
 	ColType string `json:"coltype"`
 }
@@ -56,14 +56,14 @@ func (parser *TypeParser) GetParserFromYAML(filename string) {
 		log.Fatalln("Error reading file")
 	}
 
-	var parseType []ParseTypeYAML
+	var parseType []parseTypeYAML
 
 	err = yaml.Unmarshal(YAMLByte, &parseType)
 	if err != nil {
 		log.Fatalln("Error parsing YAML")
 	}
 
-	parser.ParseFunc = make(map[string]ParseFuncType)
+	parser.ParseFunc = make(map[string]parseFuncType)
 	for _, v := range parseType {
 		switch v.ColType {
 		// case "string":
@@ -83,7 +83,7 @@ func (parser *TypeParser) GetParserFromYAML(filename string) {
 // GetSmartParser - infer parser by looping through [][]string
 func (parser *TypeParser) GetSmartParser(val [][]string) {
 	keys := val[0] // header is always key
-	parser.ParseFunc = make(map[string]ParseFuncType)
+	parser.ParseFunc = make(map[string]parseFuncType)
 	for col := 0; col < len(keys); col++ {
 		var hasString, hasFloat, hasInt, hasBool bool
 		for row := 1; row < len(val); row++ {
