@@ -1,7 +1,7 @@
 package goparser
 
-// ParseInterfaceToString - this makes [][]interface{} much easier to work with
-// !!Caution!! - Interface must be `string` (data received from spreadsheet etc)
+// ParseInterfaceToString - This makes [][]interface{} much easier to work with.
+// Caution - Interface must be `string` (data received from spreadsheet etc).
 func ParseInterfaceToString(val [][]interface{}) [][]string {
 	resp := make([][]string, len(val))
 	for i := 0; i < len(val); i++ {
@@ -13,7 +13,7 @@ func ParseInterfaceToString(val [][]interface{}) [][]string {
 	return resp
 }
 
-// ParseRowToList - convert [][]string to []map[string] (list<key, val>)
+// ParseRowToList - Convert [][]string to []map[string] (list<key, val>).
 func ParseRowToList(val [][]string, typeParser *TypeParser) []map[string]interface{} {
 	keys := val[0] // header is always key
 
@@ -33,7 +33,7 @@ func ParseRowToList(val [][]string, typeParser *TypeParser) []map[string]interfa
 	return obj
 }
 
-// ParseRowToMap - Parse rows to map, note that keyCol must be unique otherwise it will be overridden by the last row
+// ParseRowToMap - Parse rows to map, note that keyCol must be unique otherwise it will be overridden by the last row.
 func ParseRowToMap(val [][]string, keyCol string, typeParser *TypeParser) map[string]map[string]interface{} {
 	res := make(map[string]map[string]interface{})
 

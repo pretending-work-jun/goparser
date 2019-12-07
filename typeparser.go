@@ -10,12 +10,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// TypeParser - parse type smartly
+// TypeParser - Parse type smartly.
 type TypeParser struct {
 	ParseFunc map[string]parseFuncType
 }
 
-// parseFuncType - wrap parsing function type
+// parseFuncType - Wrap parsing function type.
 type parseFuncType = func(s string) interface{}
 
 func (parser *TypeParser) parseFloat(s string) interface{} {
@@ -36,13 +36,13 @@ func (parser *TypeParser) parseString(s string) interface{} {
 	return s
 }
 
-// parseTypeYAML - expected format from YAML file
+// parseTypeYAML - Expected format from YAML file.
 type parseTypeYAML struct {
 	ColName string `json:"colname"`
 	ColType string `json:"coltype"`
 }
 
-// GetParserFromYAML - smartly make the parsing functions from YAML file
+// GetParserFromYAML - Smartly make the parsing functions from YAML file.
 func (parser *TypeParser) GetParserFromYAML(filename string) {
 	YAMLFile, err := os.Open(filename)
 	if err != nil {
@@ -80,7 +80,7 @@ func (parser *TypeParser) GetParserFromYAML(filename string) {
 	}
 }
 
-// GetSmartParser - infer parser by looping through [][]string
+// GetSmartParser - Smartly infer parser by looping through [][]string.
 func (parser *TypeParser) GetSmartParser(val [][]string) {
 	keys := val[0] // header is always key
 	parser.ParseFunc = make(map[string]parseFuncType)
